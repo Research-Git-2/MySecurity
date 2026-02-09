@@ -6,6 +6,7 @@ import org.example.mysecurity.enums.Role;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "person")
@@ -36,4 +37,7 @@ public class Person {
     @Column(name = "created_at", nullable = false, updatable = false)
     @CreationTimestamp
     private LocalDateTime created_at;
+
+    @OneToMany(mappedBy = "person_img")
+    private List<Img> images;
 }
