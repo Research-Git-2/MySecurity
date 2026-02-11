@@ -34,7 +34,7 @@ public class HomeController {
     @GetMapping("/admin/{id}/edit")
     public String editPerson(@PathVariable("id") int id, Model model) {
         model.addAttribute("person", personService.findById(id));
-        return "secret/edit";
+        return "profile/edit";
     }
 
     @PostMapping("/admin/{id}")
