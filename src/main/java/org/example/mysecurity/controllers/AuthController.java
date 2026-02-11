@@ -1,6 +1,7 @@
 package org.example.mysecurity.controllers;
 
 import org.example.mysecurity.models.Person;
+import org.example.mysecurity.repository.ImgRepository;
 import org.example.mysecurity.services.RegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -18,11 +19,20 @@ import java.util.UUID;
 @RequestMapping("/auth")
 public class AuthController {
     private final RegisterService registerService;
+    private final ImgRepository imgRepository;
+
     private static final String UPLOAD_DIR = "uploads/";
 
     @Autowired
-    public AuthController(RegisterService registerService) {
+    public AuthController(RegisterService registerService, ImgRepository imgRepository) {
         this.registerService = registerService;
+        this.imgRepository = imgRepository;
+
+        try {
+            Files.createDirectories(Paths.get(UPLOAD_DIR));
+        } catch (IOException e) {
+            throw new RuntimeException("Could not create upload directory", e);
+        }
     }
 
     @GetMapping("/login")
@@ -37,24 +47,26 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public String register(@ModelAttribute("person") Person person,
-                           @RequestParam("profileImage") MultipartFile file) {
+    public String performRegistration(
+            @ModelAttribute("people") Person person,
+            @RequestParam("profileImage") MultipartFile file) {
+
         if (!file.isEmpty()) {
             try {
-                String name = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
+                String fileName = UUID.randomUUID().toString() + "_" + file.getOriginalFilename();
 
-                Path filePath = Paths.get(UPLOAD_DIR);
+                Path filePath = Paths.get(UPLOAD_DIR + fileName);
                 Files.write(filePath, file.getBytes());
 
-                registerService.register(person, name);
-            } catch (IOException exception) {
-                exception.printStackTrace();
-                return "redirect:/auth/register?error=upload";
+                registerService.register(person, fileName);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Failed to save image", e);
             }
         } else {
             registerService.register(person, null);
         }
-        person.setEnabled(true);
+
         return "redirect:/auth/login";
     }
 }

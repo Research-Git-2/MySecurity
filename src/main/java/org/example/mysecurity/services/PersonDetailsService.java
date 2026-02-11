@@ -25,4 +25,8 @@ public class PersonDetailsService implements UserDetailsService {
         );
         return new PersonDetails(person);
     }
+
+    public Person findByEmail(String email) {
+        return personRepository.findByEmail(email).orElse(null);
+    }
 }
