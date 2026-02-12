@@ -8,10 +8,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/home")
@@ -62,14 +62,29 @@ public class HomeController {
     }
 
     @PostMapping("/admin/{id}")
-    public String postPerson(@PathVariable("id") int id, Person person) {
-        personService.update(id, person);
-        return "redirect:/home";
+    public String postPerson(@PathVariable("id") int id, Person person,
+                             @RequestParam("profileImage") MultipartFile file) {
+        personService.update(id, person, file);
+        return "redirect:/home/admin";
     }
 
     @PostMapping("/admin/{id}/delete")
     public String deletePerson(@PathVariable("id") int id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentEmail = authentication.getName();
+
+        Person currentUser = personService.findByEmail(currentEmail)
+                .orElse(null);
+
+        boolean deletingSelf = currentUser != null && currentUser.getId_person() == id;
+
         personService.delete(id);
-        return "redirect:/home";
+
+        if (deletingSelf) {
+            SecurityContextHolder.clearContext();
+            return "redirect:/auth/register";
+        }
+
+        return "redirect:/home/admin";
     }
 }

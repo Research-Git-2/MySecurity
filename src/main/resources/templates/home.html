@@ -6,6 +6,10 @@
     <title>Title</title>
 </head>
 <body>
+<div th:if="${person.role == T(org.example.mysecurity.enums.Role).ROLE_ADMIN}">
+    <a th:href="@{/home/admin}">Для admins</a>
+    <hr>
+</div>
 <div class="profile-image-container">
     <img th:if="${profileImageUrl != null && !profileImageUrl.contains('default-avatar')}"
          th:src="@{${profileImageUrl}}"

@@ -1,10 +1,37 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
 <body>
- hey for admins !
+<form method="post" th:action="@{/logout}">
+    <input type="submit" value="Logout">
+</form>
+<a th:href="@{/home}">Профиль</a>
+<h1>Пользователи</h1>
+<hr>
+<div th:each="person : ${people}">
+    <a th:href="@{/home/admin/{id}/edit(id=${person.id_person})}">
+        <div class="profile-image-container">
+            <img th:if="${person.images != null and !person.images.isEmpty()}"
+                 th:src="@{'/uploads/' + ${person.images[0].path}}"
+                 alt="Фото профиля"
+                 class="profile-image"
+                 onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+
+            <img th:if="${person.images == null or person.images.isEmpty()}"
+                 src="/images/default-avatar.png"
+                 alt="Нет фото"
+                 class="profile-image">
+        </div>
+
+        <span th:text="${person.firstname} + ' ' + ${person.lastname}"></span><br>
+        <span th:text="${person.email}"></span><br>
+        <span th:text="${person.role}"></span><br>
+        <span th:text="${person.enabled}"></span><br>
+    </a> <br>
+</div>
 </body>
 </html>

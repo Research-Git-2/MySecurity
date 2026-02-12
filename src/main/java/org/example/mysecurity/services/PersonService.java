@@ -1,10 +1,17 @@
 package org.example.mysecurity.services;
 
 import jakarta.transaction.Transactional;
+import org.example.mysecurity.models.Img;
 import org.example.mysecurity.models.Person;
 import org.example.mysecurity.repository.PersonRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,10 +28,6 @@ public class PersonService {
         return personRepository.findByEmail(email);
     }
 
-    public Person save(Person person) {
-        return personRepository.save(person);
-    }
-
     public List<Person> findAll() {
         return personRepository.findAll();
     }
@@ -34,10 +37,38 @@ public class PersonService {
         return personOptional.orElse(null);
     }
 
-    @Transactional
-    public void update(int id, Person person) {
-        person.setId_person(id);
-        personRepository.save(person);
+    public Person update(int id, Person updatePerson, MultipartFile file) {
+
+        Person existingPerson = personRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Person not found"));
+
+        existingPerson.setFirstname(updatePerson.getFirstname());
+        existingPerson.setLastname(updatePerson.getLastname());
+        existingPerson.setEmail(updatePerson.getEmail());
+        existingPerson.setRole(updatePerson.getRole());
+        existingPerson.setEnabled(updatePerson.isEnabled());
+
+        if (file != null && !file.isEmpty()) {
+            try {
+                String uploadDir = "uploads/";
+                String fileName = file.getOriginalFilename();
+
+                Path path = Paths.get(uploadDir + fileName);
+                Files.write(path, file.getBytes());
+
+                Img image = new Img();
+                image.setPath(fileName);
+                image.setPerson_img(existingPerson);
+
+                existingPerson.getImages().clear();
+                existingPerson.getImages().add(image);
+
+            } catch (IOException e) {
+                throw new RuntimeException("Error saving file", e);
+            }
+        }
+
+        return personRepository.save(existingPerson);
     }
 
     @Transactional
