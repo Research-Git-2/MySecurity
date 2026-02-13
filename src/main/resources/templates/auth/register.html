@@ -1,28 +1,57 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
 </head>
-<body>
-<form method="post" th:action="@{/auth/register}" th:object="${person}" enctype="multipart/form-data">
-    <input type="file" name="profileImage" accept="image/*"><br>
+<body class="register-page">
+<div class="form-container">
+    <h2>Регистрация</h2>
+    <div th:if="${param.error}" class="alert alert-error">
+        Ошибка при регистрации. Пожалуйста, проверьте введенные данные.
+    </div>
 
-    <label>firstname</label>
-    <input type="text" th:field="*{firstname}"><br>
+    <div th:if="${param.success}" class="alert alert-success">
+        Регистрация успешна! Теперь вы можете войти.
+    </div>
 
-    <label>lastname</label>
-    <input type="text" th:field="*{lastname}"><br>
+    <form method="post" th:action="@{/auth/register}" th:object="${person}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="profileImage">Фото профиля</label>
+            <input type="file" id="profileImage" name="profileImage" accept="image/*" class="form-control">
+        </div>
 
-    <label>email</label>
-    <input type="text" th:field="*{email}"><br>
+        <div class="form-group">
+            <label for="firstname">Имя</label>
+            <input type="text" id="firstname" th:field="*{firstname}" placeholder="Введите ваше имя"
+                   class="form-control">
+        </div>
 
-    <label>password</label>
-    <input type="password" th:field="*{password}"><br>
+        <div class="form-group">
+            <label for="lastname">Фамилия</label>
+            <input type="text" id="lastname" th:field="*{lastname}" placeholder="Введите вашу фамилию"
+                   class="form-control">
+        </div>
 
-    <input type="submit" value="submit">
-</form>
-<a th:href="@{/register}">Login page</a>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" th:field="*{email}" placeholder="Введите ваш email" class="form-control">
+        </div>
+
+        <div class="form-group">
+            <label for="password">Пароль</label>
+            <input type="password" id="password" th:field="*{password}" placeholder="Введите пароль"
+                   class="form-control">
+        </div>
+
+        <input type="submit" value="Зарегистрироваться">
+    </form>
+
+    <div class="links-container">
+        <a th:href="@{/auth/login}">Уже есть аккаунт? Войти</a>
+    </div>
+</div>
 </body>
 </html>

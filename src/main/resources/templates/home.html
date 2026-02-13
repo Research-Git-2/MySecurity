@@ -1,34 +1,43 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Профиль</title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
 </head>
 <body>
-<div th:if="${person.role == T(org.example.mysecurity.enums.Role).ROLE_ADMIN}">
-    <a th:href="@{/home/admin}">Для admins</a>
-    <hr>
-</div>
-<div class="profile-image-container">
-    <img th:if="${profileImageUrl != null && !profileImageUrl.contains('default-avatar')}"
-         th:src="@{${profileImageUrl}}"
-         alt="Фото профиля"
-         class="profile-image"
-         onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+<header class="top-bar">
+    <h2>Мой профиль</h2>
+    <div class="actions">
+        <div th:if="${person.role == T(org.example.mysecurity.enums.Role).ROLE_ADMIN}">
+            <a th:href="@{/home/admin}" class="btn admin-btn">Админ панель</a>
+        </div>
 
-    <div th:if="${profileImageUrl != null && profileImageUrl.contains('default-avatar')}"
-         class="no-photo">
-        Фото не загружено
+        <form method="post" th:action="@{/logout}">
+            <button type="submit" class="btn logout-btn">Logout</button>
+        </form>
     </div>
-</div>
-<span th:text="${person.firstname}"></span><br>
-<span th:text="${person.lastname}"></span><br>
-<span th:text="${person.email}"></span><br>
-<span th:text="${person.role}"></span><br>
+</header>
+<main class="profile-container">
+    <div class="profile-card">
+        <div class="profile-image-container">
+            <img th:if="${profileImageUrl != null && !profileImageUrl.contains('default-avatar')}"
+                 th:src="@{${profileImageUrl}}"
+                 alt="Фото профиля"
+                 class="profile-image"
+                 onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+            <div th:if="${profileImageUrl != null && profileImageUrl.contains('default-avatar')}"
+                 class="no-photo">
+                Фото не загружено
+            </div>
+        </div>
 
-<form method="post" th:action="@{/logout}">
-    <input type="submit" value="logout">
-</form>
+        <div class="profile-info">
+            <h3 th:text="${person.firstname} + ' ' + ${person.lastname}"></h3>
+            <p><strong>Email:</strong> <span th:text="${person.email}"></span></p>
+            <p><strong>Роль:</strong> <span class="role" th:text="${person.role}"></span></p>
+        </div>
+    </div>
+</main>
 </body>
 </html>

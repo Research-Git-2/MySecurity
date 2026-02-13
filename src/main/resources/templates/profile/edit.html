@@ -1,34 +1,84 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
-<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Редактирование пользователя</title>
+    <link rel="stylesheet" th:href="@{/css/edit.css}">
 </head>
-<body>
-<form method="post" th:action="@{/home/admin/{id}(id=${person.id_person})}" th:object="${person}"
-      enctype="multipart/form-data">
-    <input type="file" name="profileImage" accept="image/*"><br>
-    <input type="text" th:field="*{firstname}"><br>
-    <input type="text" th:field="*{lastname}"><br>
-    <input type="text" th:field="*{email}"><br>
-    <select th:field="*{role}">
-        <option th:each="rolePerson : ${T(org.example.mysecurity.enums.Role).values()}"
-                th:value="${rolePerson}"
-                th:text="${rolePerson.name()}">
-        </option>
-    </select>
+<body class="admin-page">
+<div class="container">
+    <div class="form-container">
+        <h2 class="form-title">Редактирование пользователя</h2>
+        <div class="user-info-header">
+            <div class="edit-profile-image">
+                <img th:if="${person.images != null and !person.images.isEmpty()}"
+                     th:src="@{'/uploads/' + ${person.images[0].path}}"
+                     alt="Фото профиля"
+                     class="edit-profile-img"
+                     onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+                <img th:if="${person.images == null or person.images.isEmpty()}"
+                     src="/images/default-avatar.png"
+                     alt="Нет фото"
+                     class="edit-profile-img">
+                <div class="image-overlay">Изменить фото</div>
+            </div>
+        </div>
 
-    <label>
-        <input type="checkbox" th:field="*{enabled}">Заблокировать
-    </label><br>
+        <form method="post" th:action="@{/home/admin/{id}(id=${person.id_person})}" th:object="${person}" enctype="multipart/form-data" class="edit-form">
+            <div class="form-group">
+                <label for="profileImage" class="form-label">Фото профиля</label>
+                <input type="file" id="profileImage" name="profileImage" accept="image/*" class="form-control file-input">
+            </div>
 
-    <button type="submit">Сохранить</button><br>
-</form>
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="firstname" class="form-label">Имя</label>
+                    <input type="text" id="firstname" th:field="*{firstname}" class="form-control" placeholder="Введите имя">
+                </div>
 
-<form method="post" th:action="@{/home/admin/{id}/delete(id=${person.id_person})}">
-    <button type="submit">Удалить</button><br>
-</form>
-<a th:href="@{/home/admin}">Вернуться назад</a>
+                <div class="form-group">
+                    <label for="lastname" class="form-label">Фамилия</label>
+                    <input type="text" id="lastname" th:field="*{lastname}" class="form-control" placeholder="Введите фамилию">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" th:field="*{email}" class="form-control" placeholder="Введите email">
+            </div>
+
+            <div class="form-group">
+                <label for="role" class="form-label">Роль пользователя</label>
+                <select id="role" th:field="*{role}" class="form-control">
+                    <option th:each="rolePerson : ${T(org.example.mysecurity.enums.Role).values()}"
+                            th:value="${rolePerson}"
+                            th:text="${rolePerson.name()}"
+                            th:selected="${rolePerson == person.role}">
+                    </option>
+                </select>
+            </div>
+
+            <div class="form-group checkbox-group">
+                <label class="checkbox-label">
+                    <input type="checkbox" th:field="*{enabled}" class="checkbox-input">
+                    <span class="checkbox-custom"></span>
+                    Заблокировать пользователя
+                </label>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                <a th:href="@{/home/admin}" class="btn btn-secondary">Отмена</a>
+            </div>
+        </form>
+
+        <div class="danger-zone">
+            <form method="post" th:action="@{/home/admin/{id}/delete(id=${person.id_person})}">
+                <button type="submit" class="btn btn-danger">Удалить пользователя</button>
+            </form>
+        </div>
+    </div>
+</div>
 </body>
 </html>
