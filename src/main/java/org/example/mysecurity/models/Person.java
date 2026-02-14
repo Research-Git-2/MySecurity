@@ -38,6 +38,8 @@ public class Person {
     @CreationTimestamp
     private LocalDateTime created_at;
 
-    @OneToMany(mappedBy = "person_img")
+    @OneToMany(mappedBy = "person_img",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Img> images;
 }

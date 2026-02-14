@@ -18,28 +18,32 @@
                      class="edit-profile-img"
                      onerror="this.onerror=null; this.src='/images/default-avatar.png';">
                 <img th:if="${person.images == null or person.images.isEmpty()}"
-                     src="/images/default-avatar.png"
+                     th:src="@{/uploads/default-avatar.jpg}"
                      alt="Нет фото"
                      class="edit-profile-img">
                 <div class="image-overlay">Изменить фото</div>
             </div>
         </div>
 
-        <form method="post" th:action="@{/home/admin/{id}(id=${person.id_person})}" th:object="${person}" enctype="multipart/form-data" class="edit-form">
+        <form method="post" th:action="@{/home/admin/{id}(id=${person.id_person})}" th:object="${person}"
+              enctype="multipart/form-data" class="edit-form">
             <div class="form-group">
                 <label for="profileImage" class="form-label">Фото профиля</label>
-                <input type="file" id="profileImage" name="profileImage" accept="image/*" class="form-control file-input">
+                <input type="file" id="profileImage" name="profileImage" accept="image/*"
+                       class="form-control file-input">
             </div>
 
             <div class="form-row">
                 <div class="form-group">
                     <label for="firstname" class="form-label">Имя</label>
-                    <input type="text" id="firstname" th:field="*{firstname}" class="form-control" placeholder="Введите имя">
+                    <input type="text" id="firstname" th:field="*{firstname}" class="form-control"
+                           placeholder="Введите имя">
                 </div>
 
                 <div class="form-group">
                     <label for="lastname" class="form-label">Фамилия</label>
-                    <input type="text" id="lastname" th:field="*{lastname}" class="form-control" placeholder="Введите фамилию">
+                    <input type="text" id="lastname" th:field="*{lastname}" class="form-control"
+                           placeholder="Введите фамилию">
                 </div>
             </div>
 

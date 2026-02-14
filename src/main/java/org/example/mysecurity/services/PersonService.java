@@ -12,8 +12,10 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -30,6 +32,10 @@ public class PersonService {
 
     public List<Person> findAll() {
         return personRepository.findAll();
+    }
+
+    public Person save(Person person) {
+        return personRepository.save(person);
     }
 
     public Person findById(int id) {
@@ -51,14 +57,20 @@ public class PersonService {
         if (file != null && !file.isEmpty()) {
             try {
                 String uploadDir = "uploads/";
-                String fileName = file.getOriginalFilename();
+                Files.createDirectories(Paths.get(uploadDir));
 
-                Path path = Paths.get(uploadDir + fileName);
+                String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+                Path path = Paths.get(uploadDir, fileName);
                 Files.write(path, file.getBytes());
 
                 Img image = new Img();
                 image.setPath(fileName);
                 image.setPerson_img(existingPerson);
+
+                if (existingPerson.getImages() == null) {
+                    existingPerson.setImages(new ArrayList<>());
+                }
 
                 existingPerson.getImages().clear();
                 existingPerson.getImages().add(image);
@@ -70,6 +82,7 @@ public class PersonService {
 
         return personRepository.save(existingPerson);
     }
+
 
     @Transactional
     public void delete(int id) {

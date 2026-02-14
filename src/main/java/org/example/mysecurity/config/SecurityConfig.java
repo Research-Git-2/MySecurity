@@ -5,7 +5,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -32,7 +31,8 @@ public class SecurityConfig {
                         .requestMatchers("/css/**").permitAll()
                         .requestMatchers("/home/admin/**").hasRole("ADMIN")
                         .requestMatchers("/home").authenticated()
-                        .requestMatchers("/auth/login", "/auth/register", "/auth/forget-password").permitAll()
+                        .requestMatchers("/auth/login", "/auth/register",
+                                "/auth/forgot-password", "/auth/reset-password").permitAll()
                         .anyRequest().hasAnyRole("USER", "ADMIN")
                 )
                 .formLogin(login -> login
@@ -41,6 +41,10 @@ public class SecurityConfig {
                         .defaultSuccessUrl("/home", true)
                         .failureUrl("/auth/login?error=true")
                         .permitAll()
+                )
+                .oauth2Login(oauth -> oauth
+                        .loginPage("/auth/login")
+                        .defaultSuccessUrl("/hello", true)
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
