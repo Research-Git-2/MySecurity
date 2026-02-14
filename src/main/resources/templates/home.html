@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Профиль</title>
+    <link rel="stylesheet" th:href="@{/css/profile.css}">
+</head>
+<body>
+<header class="top-bar">
+    <h2>Мой профиль</h2>
+    <div class="actions">
+        <div th:if="${person.role == T(org.example.mysecurity.enums.Role).ROLE_ADMIN}">
+            <a th:href="@{/home/admin}" class="btn admin-btn">Админ панель</a>
+        </div>
+
+        <form method="post" th:action="@{/logout}">
+            <button type="submit" class="btn logout-btn">Logout</button>
+        </form>
+    </div>
+</header>
+<main class="profile-container">
+    <div class="profile-card">
+        <div class="profile-image-container">
+            <img th:if="${profileImageUrl != null && !profileImageUrl.contains('default-avatar')}"
+                 th:src="@{${profileImageUrl}}"
+                 alt="Фото профиля"
+                 class="profile-image"
+                 onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+            <div th:if="${profileImageUrl != null && profileImageUrl.contains('default-avatar')}"
+                 class="no-photo">
+                Фото не загружено
+            </div>
+        </div>
+
+        <div class="profile-info">
+            <h3 th:text="${person.firstname} + ' ' + ${person.lastname}"></h3>
+            <p><strong>Email:</strong> <span th:text="${person.email}"></span></p>
+            <p><strong>Роль:</strong> <span class="role" th:text="${person.role}"></span></p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Проверьте почту</title>
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+</head>
+<body class="check-email-page">
+<div class="form-container">
+    <h2>Проверьте вашу почту</h2>
+
+    <div class="alert alert-info">
+        <p th:text="${message}">На ваш email была отправлена ссылка для восстановления пароля.</p>
+    </div>
+
+    <p>Пожалуйста, проверьте вашу почту и следуйте инструкциям в письме.</p>
+
+    <div class="links-container">
+        <a th:href="@{/auth/login}">Вернуться на страницу входа</a>
+    </div>
+</div>
+</body>
+</html>

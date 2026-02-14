@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Пользователи</title>
+    <link rel="stylesheet" th:href="@{/css/show.css}">
+</head>
+<body>
+<header class="top-bar">
+    <form method="post" th:action="@{/logout}">
+        <button type="submit" class="btn logout-btn">Выйти из профиля</button>
+    </form>
+
+    <a th:href="@{/home}" class="btn profile-btn">Профиль</a>
+</header>
+<main class="container">
+    <h1>Пользователи</h1>
+    <div class="users-grid">
+        <a class="user-card"
+           th:each="person : ${people}"
+           th:href="@{/home/admin/{id}/edit(id=${person.id_person})}">
+            <div class="profile-image-container">
+                <img th:if="${person.images != null and !person.images.isEmpty()}"
+                     th:src="@{'/uploads/' + ${person.images[0].path}}"
+                     alt="Фото профиля"
+                     class="profile-image"
+                     onerror="this.onerror=null; this.src='/images/default-avatar.png';">
+
+                <img th:if="${person.images == null or person.images.isEmpty()}"
+                     src="/images/default-avatar.png"
+                     alt="Нет фото"
+                     class="profile-image">
+            </div>
+
+            <div class="user-info">
+                <h3 th:text="${person.firstname} + ' ' + ${person.lastname}"></h3>
+                <p th:text="${person.email}"></p>
+                <p class="role" th:text="${person.role}"></p>
+                <p class="status"
+                   th:classappend="${person.enabled} ? 'blocked' : 'active'"
+                   th:text="${person.enabled} ? 'Заблокирован' : 'Активен'">
+                </p>
+            </div>
+        </a>
+    </div>
+</main>
+</body>
+</html>
